@@ -40,7 +40,7 @@ class SubCategory(models.Model):
 class Course(models.Model):
     title = models.CharField(max_length=255)
 
-    subCategory = models.ForeignKey(Category, on_delete=models.CASCADE)
+    subCategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
     duration = models.DurationField(blank=True, null=True)

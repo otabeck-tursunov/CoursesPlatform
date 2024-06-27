@@ -4,4 +4,15 @@ from .views import *
 urlpatterns = [
     path('teachers/', TeachersListAPIView.as_view()),
     path('teachers/<int:pk>/', TeacherDetailsAPIView.as_view()),
+
+    path('categories/', CategoriesListAPIView.as_view()),
+    path('categories/<int:pk>/', CategoryDetailsAPIView.as_view()),
+
+    path('subCategories/', SubCategoriesListAPIView.as_view()),
+    path('subCategories/<int:pk>/', SubCategoryDetailsAPIView.as_view()),
+
+    path('courses/', CoursesListAPIView.as_view()),
+    path('courses/<int:pk>/', CourseDetailsAPIView.as_view()),
+
+    path('sections/', SectionsListAPIView.as_view()),
 ]
