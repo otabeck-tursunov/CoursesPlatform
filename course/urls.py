@@ -11,8 +11,12 @@ urlpatterns = [
     path('subCategories/', SubCategoriesListAPIView.as_view()),
     path('subCategories/<int:pk>/', SubCategoryDetailsAPIView.as_view()),
 
-    path('courses/', CoursesListAPIView.as_view()),
-    path('courses/<int:pk>/', CourseDetailsAPIView.as_view()),
+    path('', CoursesListAPIView.as_view()),
+    path('<int:pk>/', CourseDetailsAPIView.as_view()),
 
     path('sections/', SectionsListAPIView.as_view()),
+    path('sections/<int:pk>/', SectionDetailsAPIView.as_view()),
+
+    path('lessons/', LessonsListAPIView.as_view()),
+    path('lessons/<int:pk>/', LessonDetailsAPIView.as_view()),
 ]

@@ -5,7 +5,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework.generics import *
 
-from .filters import TeacherFilter, CourseFilter, SectionFilter
+from .filters import TeacherFilter, CourseFilter, SectionFilter, LessonFilter
 from .serializers import *
 
 
@@ -181,3 +181,52 @@ class SectionsListAPIView(ListAPIView):
             get_object_or_404(Course, pk=course_id)
             sections = sections.filter(course_id=course_id)
         return sections
+
+
+class SectionDetailsAPIView(RetrieveAPIView):
+    queryset = Section.objects.all()
+    serializer_class = SectionSerializer
+
+
+class LessonsListAPIView(ListAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+    filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
+    filterset_class = LessonFilter
+    search_fields = ['title', 'description']
+    ordering_fields = ['title', 'duration']
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('search', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                              description="Search by title, description"),
+            openapi.Parameter('title', openapi.IN_QUERY, type=openapi.TYPE_STRING, description="Search by title"),
+            openapi.Parameter('ordering', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                              description="Order by title, duration", enum=['title', 'duration']),
+            openapi.Parameter('course_id', openapi.IN_QUERY, type=openapi.TYPE_INTEGER,
+                              description="Filter by Course\'s ID"),
+            openapi.Parameter('section_id', openapi.IN_QUERY, type=openapi.TYPE_INTEGER,
+                              description="Filter by Section's ID"),
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        lessons = Lesson.objects.all()
+
+        course_id = self.request.query_params.get('course_id', None)
+        if course_id is not None:
+            get_object_or_404(Course, pk=course_id)
+            lessons = lessons.filter(section__course_id=course_id)
+
+        section_id = self.request.query_params.get('section_id', None)
+        if section_id is not None:
+            get_object_or_404(Section, pk=section_id)
+            lessons = lessons.filter(section_id=section_id)
+        return lessons
+
+
+class LessonDetailsAPIView(RetrieveAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer

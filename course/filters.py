@@ -1,6 +1,6 @@
 import django_filters
 from django_filters import FilterSet
-from .models import Teacher, Course, Section
+from .models import Teacher, Course, Section, Lesson
 
 
 class TeacherFilter(FilterSet):
@@ -26,4 +26,12 @@ class SectionFilter(FilterSet):
 
     class Meta:
         model = Section
+        fields = ['title']
+
+
+class LessonFilter(FilterSet):
+    title = django_filters.CharFilter(field_name="title", lookup_expr='icontains')
+
+    class Meta:
+        model = Lesson
         fields = ['title']

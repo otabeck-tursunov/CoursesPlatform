@@ -92,7 +92,7 @@ class CourseSerializer(ModelSerializer):
 class CourseSectionSerializer(ModelSerializer):
     class Meta:
         model = Section
-        fields = ('title', 'description', 'duration', 'videos_count')
+        fields = ('id', 'title', 'description', 'duration', 'videos_count')
 
 
 class SectionSerializer(ModelSerializer):
@@ -104,4 +104,20 @@ class SectionSerializer(ModelSerializer):
 class SectionLessonSerializer(ModelSerializer):
     class Meta:
         model = Lesson
-        fields = ('title', 'description', 'video_path', 'duration')
+        fields = ('id', 'title', 'description', 'video_path', 'duration')
+
+
+class LessonSerializer(ModelSerializer):
+    class Meta:
+        model = Lesson
+        fields = ('id', 'title', 'description', 'video_path', 'duration', 'section')
+
+    def to_representation(self, instance):
+        lesson = super(LessonSerializer, self).to_representation(instance)
+        course_id = instance.section.course.id
+        lesson.update(
+            {
+                'course': course_id
+            }
+        )
+        return lesson
