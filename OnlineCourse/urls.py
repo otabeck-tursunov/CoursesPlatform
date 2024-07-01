@@ -26,6 +26,6 @@ urlpatterns = [
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),
 
     path('students/', include('users.urls')),
-    path('courses/', include('course.urls')),
+    path('teach/', include('course.urls')),
 
 ]
