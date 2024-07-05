@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Teacher, Category, SubCategory, Course, Section, Lesson
+from .models import Teacher, Category, SubCategory, Course, Section, Lesson, StudentCourse, StudentLesson
 
 
 class TeacherAdmin(admin.ModelAdmin):
@@ -66,3 +66,5 @@ admin.site.register(SubCategory, SubCategoryAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Section, SectionAdmin)
+
+admin.site.register([StudentCourse, StudentLesson])

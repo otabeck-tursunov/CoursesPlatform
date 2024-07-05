@@ -19,4 +19,7 @@ urlpatterns = [
 
     path('lessons/', LessonsListAPIView.as_view()),
     path('lessons/<int:pk>/', LessonDetailsAPIView.as_view()),
+
+    path('my-courses/', StudentCoursesListAPIView.as_view()),
+    path('get-course/', StudentCourseCreateAPIView.as_view()),
 ]

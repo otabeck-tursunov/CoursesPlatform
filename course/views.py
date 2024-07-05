@@ -2,6 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import *
 
@@ -230,3 +231,48 @@ class LessonsListAPIView(ListAPIView):
 class LessonDetailsAPIView(RetrieveAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+
+
+# ----------------------- My courses and lessons -----------------------------------------------------------------------
+
+class StudentCoursesListAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated, ]
+
+    queryset = StudentCourse.objects.all()
+    serializer_class = StudentCourseSerializer
+    filter_backends = [OrderingFilter]
+    ordering_fields = ['course', 'created_at', 'view']
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='search', in_=openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                              description="Search by Course Title!"),
+            openapi.Parameter('ordering', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                              description="Order by Course's ID, created_at, view!",
+                              enum=['course', 'created_at', 'view']),
+
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        studentCourses = self.queryset.filter(student=self.request.user)
+
+        search = self.request.query_params.get('search', None)
+        if search is not None:
+            studentCourses = studentCourses.filter(course__title__icontains=search)
+        return studentCourses
+
+
+class StudentCourseCreateAPIView(CreateAPIView):
+    permission_classes = [IsAuthenticated, ]
+
+    queryset = StudentCourse
+    serializer_class = StudentCoursePostSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
+        course = get_object_or_404(Course, id=serializer.data.get('course'))
+        course.students_count += 1
+        course.save()

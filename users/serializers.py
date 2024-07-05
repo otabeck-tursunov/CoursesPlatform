@@ -7,6 +7,13 @@ class StudentRegisterSerializer(serializers.ModelSerializer):
         model = Student
         fields = ('username', 'password', 'email', 'phone_number', 'first_name', 'last_name')
 
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'email': {'required': False},
+            'first_name': {'required': False},
+            'last_name': {'required': False},
+        }
+
     def create(self, validated_data):
         return Student.objects.create_user(**validated_data)
 

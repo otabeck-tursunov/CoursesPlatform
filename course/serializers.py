@@ -121,3 +121,23 @@ class LessonSerializer(ModelSerializer):
             }
         )
         return lesson
+
+
+class CourseForSCSerializer(ModelSerializer):
+    class Meta:
+        model = Course
+        fields = "__all__"
+
+
+class StudentCourseSerializer(ModelSerializer):
+    course = CourseForSCSerializer()
+
+    class Meta:
+        model = StudentCourse
+        fields = ('id', 'course', 'created_at', 'view')
+
+
+class StudentCoursePostSerializer(ModelSerializer):
+    class Meta:
+        model = StudentCourse
+        fields = ('course',)
